@@ -15,7 +15,6 @@ export default function RecordPage() {
   const [record, setRecord] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOrderOpen, setIsOrderOpen] = useState(false);
-  const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
     let isCancelled = false;
@@ -26,7 +25,6 @@ export default function RecordPage() {
         const data = await api.getRecord(id);
         if (!isCancelled) {
           setRecord(data);
-          setActiveImage(0);
         }
       } catch (error) {
         if (!isCancelled) setRecord(null);
@@ -59,8 +57,11 @@ export default function RecordPage() {
     );
   }
 
-  const gallery = [record.cover, ...(record.images || [])].filter(Boolean);
-  const hasPhotos = gallery.length > 0;
+  // Определяем, какую картинку показывать
+  const imageUrl = record.cover?.startsWith('http') 
+    ? record.cover 
+    : `/covers/${record.id}.jpg`;
+
   const isFavorite = favorites.includes(record.id);
 
   async function handleBuy() {
@@ -89,42 +90,13 @@ export default function RecordPage() {
 
       <div className="record-detail">
         <div className="record-detail__cover">
-          {hasPhotos ? (
-            <>
-              <div className="record-detail__main-image">
-<img
-  src={src.startsWith('http') ? src : `/covers/${record.id}.jpg`}
-  alt={`${record.artist} — ${record.title}`}
-/>
-              </div>
-              {gallery.length > 1 && (
-                <div className="record-detail__thumbs">
-                  {gallery.map((src, index) => (
-                    <button
-                      key={src}
-                      type="button"
-                      className={`record-thumb ${index === activeImage ? 'record-thumb--active' : ''}`}
-                      onClick={() => setActiveImage(index)}
-                    >
-                      <img 
-  src={src.startsWith('http') ? src : `/covers/${record.id}.jpg`}
-  alt="" 
-/>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div
-              className="record-cover record-cover--large"
-              style={{ '--cover-color': record.color }}
-            >
-              <span className="record-cover__disc" aria-hidden="true" />
-              <span className="record-cover__artist">{record.artist}</span>
-              <span className="record-cover__title">{record.title}</span>
-            </div>
-          )}
+          <div className="record-detail__main-image">
+            <img
+              src={imageUrl}
+              alt={`${record.artist} — ${record.title}`}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
         </div>
 
         <div className="record-detail__info">
