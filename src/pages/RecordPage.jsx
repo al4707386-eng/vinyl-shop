@@ -93,7 +93,7 @@ export default function RecordPage() {
             <>
               <div className="record-detail__main-image">
 <img
-  src={`http://localhost:3000${gallery[activeImage]}`}
+  src={gallery[activeImage].startsWith('http') ? gallery[activeImage] : `https://vinyl-backend.layero.app${gallery[activeImage]}`}
   alt={`${record.artist} — ${record.title}`}
 />
               </div>
@@ -106,7 +106,10 @@ export default function RecordPage() {
                       className={`record-thumb ${index === activeImage ? 'record-thumb--active' : ''}`}
                       onClick={() => setActiveImage(index)}
                     >
-                      <img src={`http://localhost:3000${src}`} alt="" />
+                      <img 
+  src={src.startsWith('http') ? src : `https://vinyl-backend.layero.app${src}`} 
+  alt="" 
+/>
                     </button>
                   ))}
                 </div>

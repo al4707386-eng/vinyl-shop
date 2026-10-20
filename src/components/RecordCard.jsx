@@ -19,10 +19,9 @@ export default function RecordCard({ record, isFavorite, onToggleFavorite, index
 {record.cover && (
   <img
     className="record-cover__image"
-    src={`http://localhost:3000${record.cover}`}
+    src={record.cover.startsWith('http') ? record.cover : `https://vinyl-backend.layero.app${record.cover}`}
     alt={`${record.artist} — ${record.title}`}
     loading="lazy"
-    onError={handleImageError}
   />
 )}
 
